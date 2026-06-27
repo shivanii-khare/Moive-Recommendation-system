@@ -20,7 +20,5 @@ __pycache__/
 .DS_Store
 Thumbs.db
 
-# Large Data Files (Optional, but recommended if you downloaded heavy Kaggle datasets locally)
-*.csv
-*.pkl
-*.pickle
+# Ignore only the large similarity file
+similarity.pkl
