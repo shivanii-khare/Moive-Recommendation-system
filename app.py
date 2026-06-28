@@ -1,26 +1,5 @@
-import streamlit as st
-import pickle
-import pandas as pd
-import requests
-
-
-def fetch_poster(movie_id):
-    try:
-        # Your personal working TMDB API key applied directly below
-        api_key = "d92bb7319efef44fb3d5bf348dd27f3e"
-        url = 'https://api.themoviedb.org/3/movie/{}?api_key={}&language=en-US'.format(movie_id, api_key)
-
-        response = requests.get(url, timeout=5)
-        data = response.json()
-        return "https://image.tmdb.org/t/p/w500/" + data['poster_path']
-    except Exception:
-        # Prevent web page crashes if local connection timeouts occur
-        return "https://via.placeholder.com/500x750.png?text=Poster+Not+Available"
-
-
-def recommend(movie):
-    movie_index = movies[movies['title'] == movie].index[0]
-    distances = similarity[movie_index]
+import os
+import gdown
     movies_list = sorted(list(enumerate(distances)), reverse=True, key=lambda x: x[1])[1:6]
 
     recommended_movies = []
@@ -37,7 +16,13 @@ def recommend(movie):
 movies_dict = pickle.load(open('movie_dict.pkl', 'rb'))
 movies = pd.DataFrame(movies_dict)
 
-similarity = pickle.load(open('similarity.pkl', 'rb'))
+# Download similarity.pkl if it doesn't exist
+if not os.path.exists("similarity.pkl"):
+    file_id = "1ZAmW2_1xK98VcuHywTSVBr6SS0FfFJ_m"
+    url = f"https://drive.google.com/uc?id={file_id}"
+    gdown.download(url, "similarity.pkl", quiet=False)
+
+similarity = pickle.load(open("similarity.pkl", "rb"))
 
 st.title('Movie Recommender System')
 
